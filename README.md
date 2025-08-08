@@ -269,7 +269,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 For questions or support, reach out on:
 - **Linkedin**: https://www.linkedin.com/in/lieulieunft/
-- **X**: @lieulieunft
+- **X**:  https://x.com/lieulieunft
 - **Email**: lieulieunft@gmail.com
 
 ---
