@@ -58,7 +58,7 @@ CretoFam is a decentralized social media dApp where:
 CretoFam leverages **Base Kit** tools and a modern tech stack to deliver a seamless, decentralized experience.
 
 ### Tech Stack
-- **Blockchain**: **Base mainnet** (Ethereum L2, Optimistic Rollup) for low-cost, fast transactions.
+- **Blockchain**: **Base mainnet** (Ethereum L2) for low-cost, fast transactions.
 - **Frontend**: **Next.js/React** with **Minikit** and **OnchainKit** components.
 - **Backend**: **Next.js API routes** integrated with **OnchainKit** for blockchain interactions.
 - **Smart Contracts**: **Solidity** for NFT minting (`CretoFamNFT`) and tipping (`TippingContract`), deployed with Hardhat.
