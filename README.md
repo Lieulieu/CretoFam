@@ -58,194 +58,108 @@ CretoFam is a decentralized social media dApp where:
 CretoFam leverages **Base Kit** tools and a modern tech stack to deliver a seamless, decentralized experience.
 
 ### Tech Stack
-- **Blockchain**: **Base mainnet** (Ethereum L2) for low-cost, fast transactions.
-- **Frontend**: **React** with **Minikit** components for UI (e.g., `SignInWithBase`, `NFTMintButton`).
-- **Backend**: **Node.js** for API handling, integrated with **OnchainKit** for blockchain interactions.
+- **Blockchain**: **Base mainnet** (Ethereum L2, Optimistic Rollup) for low-cost, fast transactions.
+- **Frontend**: **Next.js/React** with **Minikit** and **OnchainKit** components.
+- **Backend**: **Next.js API routes** integrated with **OnchainKit** for blockchain interactions.
 - **Smart Contracts**: **Solidity** for NFT minting (`CretoFamNFT`) and tipping (`TippingContract`), deployed with Hardhat.
 - **Storage**: **IPFS** (via Pinata) for images, with metadata stored onchain.
-- **AI**: **AgentKit** with a model-agnostic LLM (e.g., Claude) for content curation.
+- **AI**: **AgentKit** placeholder with model-agnostic provider for content curation.
 - **APIs**: **Coinbase Developer Platform (CDP)** SDK for wallet and onchain actions.
 
 ### Base Kit Integration
 1. **Minikit** (High Priority):
-   - **SignInWithBase**: Passkey-based login for seamless onboarding.
-   - **NFTMintButton**: UI component for minting fan passes.
-   - Custom forms for posting content to IPFS.
+   - `MiniKitProvider` already configured in `app/providers.tsx`.
+   - Farcaster account association and notifications enabled via `api/webhook` and `api/notify`.
+   - New UI: Login, Post form, Feed, Tip button, NFT mint button.
 2. **OnchainKit** (Medium Priority):
-   - Handles gasless USDC tipping via **Coinbase Paymaster**.
-   - Manages blockchain interactions (e.g., querying balances, sending transactions).
+   - Transactions via `@coinbase/onchainkit/transaction`.
+   - Gasless USDC tips via Coinbase Paymaster (configure OnchainKit API key and sponsor).
 3. **AgentKit** (Low Priority):
-   - AI agent curates trending posts based on onchain data (tips, NFT mints).
-   - Example action: `getTrendingPosts` to fetch top content.
+   - `GET /api/trending` endpoint ranks posts using onchain interactions.
 4. **Base Account SDK**:
-   - Enables <60s onboarding with passkey-based universal accounts.
+   - Passkey-based onboarding via wallet modal (Wagmi connectors through MiniKit).
 
 ### Smart Contracts
 - **CretoFamNFT** (ERC-721):
   - Mint fan passes with metadata stored on IPFS.
-  - Example: `mintNFT(address recipient, string memory metadataURI)`.
+  - `mintNFT(address recipient, string memory metadataURI)`.
 - **TippingContract**:
   - Handles USDC microtransactions for tipping.
-  - Functions: `tipCreator(address creator, uint256 amount)`, `withdrawTips()`.
+  - `tipCreator(address creator, uint256 amount)` and `withdrawTips()`.
 
 ### Architecture
 ```
 CretoFam/
-├── contracts/                    # Solidity smart contracts
-│   ├── CretoFamNFT.sol          # ERC-721 for fan passes
-│   ├── TippingContract.sol      # USDC tipping logic
-├── frontend/                     # React frontend with Minikit
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Login.jsx        # SignInWithBase component
-│   │   │   ├── PostForm.jsx     # Content posting UI
-│   │   │   ├── Feed.jsx         # AI-curated feed
-│   │   │   ├── TipButton.jsx    # Tipping UI
-│   │   │   ├── NFTMint.jsx      # NFT minting UI
-├── backend/                      # Node.js APIs with OnchainKit
-│   ├── server.js
-│   ├── routes/
-│   │   ├── post.js              # Upload to IPFS
-│   │   ├── tip.js               # Trigger tipping
-│   │   ├── mint-nft.js          # Trigger NFT minting
-│   │   ├── trending.js          # Fetch AI-curated posts
-├── scripts/                      # Hardhat scripts
-│   ├── deploy.js                # Deploy to Base mainnet
-│   ├── test.js                  # Unit tests
-├── README.md                     # Project documentation
-├── package.json                  # Dependencies
-├── hardhat.config.js             # Hardhat configuration
+├── contracts/
+│   ├── CretoFamNFT.sol
+│   └── TippingContract.sol
+├── scripts/
+│   └── deploy.ts
+├── app/
+│   ├── api/
+│   │   ├── post/route.ts        # Upload to IPFS + store metadata
+│   │   ├── tip/route.ts         # Trigger tipping
+│   │   ├── mint-nft/route.ts    # Trigger NFT minting
+│   │   └── trending/route.ts    # AI-curated posts
+│   └── components/
+│       ├── Feed.tsx
+│       ├── PostForm.tsx
+│       ├── TipButton.tsx
+│       └── NFTMint.tsx
+├── lib/
+│   └── ipfs.ts                  # IPFS helpers (Pinata)
+├── hardhat.config.ts
+└── README.md
 ```
-
----
-
-## Scale Plan
-
-CretoFam is designed for scalability and long-term growth beyond the hackathon:
-
-1. **User Growth**:
-   - Leverage Base’s ecosystem (e.g., Base App, Farcaster) for organic distribution.
-   - Partner with influencers on /base and /base-builds channels to onboard creators.
-   - Offer referral programs (e.g., bonus USDC for inviting users).
-
-2. **Feature Expansion**:
-   - Add video support (short-form content) with IPFS storage.
-   - Introduce group chats or “fan clubs” tied to NFT fan passes.
-   - Enhance AI curation with user preferences (e.g., personalized feeds).
-
-3. **Monetization**:
-   - Implement a 2–5% platform fee on tips/NFT sales to sustain operations.
-   - Launch premium fan passes with tiered benefits (e.g., exclusive AMAs).
-   - Explore ad-free, subscription-based models for premium users.
-
-4. **Technical Scalability**:
-   - Optimize smart contracts for gas efficiency as user base grows.
-   - Use Base’s L2 scaling to handle high transaction volumes.
-   - Integrate additional L2 chains (e.g., Polygon, Optimism) for cross-chain compatibility.
-
-5. **Community Building**:
-   - Open-source CretoFam to attract Web3 developers.
-   - Host hackathons or bounties for new features (e.g., AI plugins).
-   - Create a governance token for community-driven decisions.
-
-6. **Global Reach**:
-   - Localize UI for multiple languages (starting with Vietnamese and English).
-   - Target emerging markets with low-cost transactions (sub-cent payments).
-   - Partner with Web3 platforms like Coinbase Wallet for broader adoption.
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js (>=16.x)
+- Node.js (>=18.x)
 - Hardhat
 - Base CLI (`npm create onchain`)
 - Coinbase Developer Platform (CDP) account
 - IPFS provider (e.g., Pinata)
 
 ### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Lieulieu/CretoFam.git
-   cd CretoFam
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   cd frontend && npm install
-   cd ../backend && npm install
-   ```
-3. Configure environment variables:
-   - Create `.env` in the root directory:
-     ```
-     BASE_RPC_URL=https://mainnet.base.org
-     PRIVATE_KEY=your_wallet_private_key
-     PINATA_API_KEY=your_pinata_api_key
-     PINATA_API_SECRET=your_pinata_api_secret
-     ```
-4. Deploy smart contracts:
-   ```bash
-   npx hardhat run scripts/deploy.js --network base
-   ```
-
-### Running Locally
-1. Start the backend:
-   ```bash
-   cd backend
-   node server.js
-   ```
-2. Start the frontend:
-   ```bash
-   cd frontend
-   npm start
-   ```
-3. Access the dApp at `http://localhost:3000`.
-
-### Deploying to Base Mainnet
-1. Update `hardhat.config.js` with Base mainnet settings.
-2. Deploy contracts:
-   ```bash
-   npx hardhat run scripts/deploy.js --network base
-   ```
-3. Deploy frontend to a hosting service (e.g., Vercel).
-4. Test gasless transactions with **Coinbase Paymaster**.
-
-### Testing
-Run unit tests for smart contracts:
+1. Install dependencies:
 ```bash
-npx hardhat test
+npm install
+```
+2. Configure environment variables in `.env.local`:
+```
+NEXT_PUBLIC_ONCHAINKIT_PROJECT_NAME=
+NEXT_PUBLIC_URL=
+NEXT_PUBLIC_ICON_URL=
+NEXT_PUBLIC_ONCHAINKIT_API_KEY=
+REDIS_URL=
+REDIS_TOKEN=
+# Onchain
+BASE_RPC_URL=https://mainnet.base.org
+PRIVATE_KEY=your_wallet_private_key
+USDC_ADDRESS=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913
+
+# IPFS / Pinata
+PINATA_JWT=your_pinata_jwt
+```
+3. Deploy smart contracts:
+```bash
+npm run hardhat compile
+npm run deploy
 ```
 
----
+### Running Locally
+```bash
+npm run dev
+```
+Open `http://localhost:3000`.
 
-## Hackathon Submission
-
-CretoFam is submitted to the **Vietnam Build Week – Base Track** (August 9–10, 2025) with:
-- **GitHub Repo**: https://github.com/Lieulieu/CretoFam .
-- **Demo URL**: Deployed dApp on Base mainnet (TBD).
-- **Demo Video**: 10-minute video showcasing:
-  - Sign-in with **Base Account SDK** (<60s).
-  - Posting content and minting NFTs with **Minikit**.
-  - Tipping creators (gasless) with **OnchainKit**.
-  - AI-curated feed via **AgentKit**.
-  - Sharing to Farcaster’s /base channel.
-- **Judging Criteria**:
-  - **Usefulness**: Empowers creators with direct monetization.
-  - **Accessibility**: <60s onboarding, intuitive UI.
-  - **Originality**: Combines NFTs, AI, and SocialFi on Base.
-  - **Wow Factor**: Gasless transactions, AI curation, modern design.
-
----
-
-## Contributing
-
-Contributions are welcome! To contribute:
-1. Fork the repository.
-2. Create a feature branch (`git checkout -b feature/your-feature`).
-3. Commit changes (`git commit -m 'Add your feature'`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
+### Testing
+```bash
+npm run hardhat test
+```
 
 ---
 
@@ -254,29 +168,10 @@ Contributions are welcome! To contribute:
 - **Minikit & OnchainKit**: https://www.base.org/build/minikit
 - **Base Account SDK**: https://www.base.org/build/base-account
 - **AgentKit**: https://docs.cdp.coinbase.com/agent-kit/welcome
-- **Vietnam Build Week**: https://dorahacks.io/hackathon/vnbw/tracks
 - **Farcaster Channels**: /base, /base-builds
 
 ---
 
 ## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-## Contact
-
-For questions or support, reach out on:
-- **Linkedin**: https://www.linkedin.com/in/lieulieunft/
-- **X**:  https://x.com/lieulieunft
-- **Email**: lieulieunft@gmail.com
-
----
-
-### **Notes for Customization**
-- **GitHub Repo Link**: Update `https://github.com/Lieulieu/CretoFam.git` with your actual repository link.
-- **Demo URL**: TBA.
-- **Team Info**: Lieulieu .
-- **Hackathon Link**: https://dorahacks.io/hackathon/vnbw/tracks .
-- **Contact Info**: https://x.com/lieulieunft .
+MIT
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
